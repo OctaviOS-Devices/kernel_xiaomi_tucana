@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2021, The Linux Foundation. All rights reserved.
  * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -8241,6 +8241,9 @@ static int afe_set_cal_sp_th_vi_cfg(int32_t cal_type, size_t data_size,
 
 	if (cal_data == NULL ||
 	    data_size > sizeof(*cal_data) ||
+	    (data_size < sizeof(cal_data->cal_hdr) +
+		sizeof(cal_data->cal_data) +
+		sizeof(cal_data->cal_info.mode)) ||
 	    this_afe.cal_data[AFE_FB_SPKR_PROT_TH_VI_CAL] == NULL)
 		goto done;
 
@@ -8385,6 +8388,9 @@ static int afe_get_cal_sp_th_vi_param(int32_t cal_type, size_t data_size,
 
 	if (cal_data == NULL ||
 	    data_size > sizeof(*cal_data) ||
+	    (data_size < sizeof(cal_data->cal_hdr) +
+		sizeof(cal_data->cal_data) +
+		sizeof(cal_data->cal_info.mode)) ||
 	    this_afe.cal_data[AFE_FB_SPKR_PROT_TH_VI_CAL] == NULL)
 		return 0;
 
