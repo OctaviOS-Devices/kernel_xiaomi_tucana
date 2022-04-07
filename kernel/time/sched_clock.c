@@ -74,7 +74,7 @@ static int irqtime = -1;
 static u64 suspend_ns;
 static u64 suspend_cycles;
 static u64 resume_cycles;
-static u64 resume_ns;
+
 core_param(irqtime, irqtime, int, 0400);
 
 static u64 notrace jiffy_sched_clock_read(void)
@@ -299,13 +299,9 @@ void sched_clock_resume(void)
 {
 	struct clock_read_data *rd = &cd.read_data[0];
 
-	update_sched_clock();
-
-	resume_ns = rd->epoch_ns;
-	//rd->epoch_cyc = cd.actual_read_sched_clock();
+	rd->epoch_cyc = cd.actual_read_sched_clock();
 	resume_cycles = rd->epoch_cyc;
 	pr_info("resume cycles:%17llu\n", rd->epoch_cyc);
-
 	hrtimer_start(&sched_clock_timer, cd.wrap_kt, HRTIMER_MODE_REL);
 	rd->read_sched_clock = cd.actual_read_sched_clock;
 }
