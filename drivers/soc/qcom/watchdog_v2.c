@@ -1,5 +1,4 @@
 /* Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
- * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -34,7 +33,6 @@
 #include <soc/qcom/watchdog.h>
 #include <linux/dma-mapping.h>
 #include <linux/sched/clock.h>
-#include <linux/sched/debug.h>
 #include <linux/cpumask.h>
 #include <uapi/linux/sched/types.h>
 
@@ -210,10 +208,6 @@ static int panic_wdog_handler(struct notifier_block *this,
 				wdog_dd->base + WDT0_BITE_TIME);
 		__raw_writel(1, wdog_dd->base + WDT0_RST);
 	}
-#ifdef CONFIG_DUMP_ALL_STACKS
-	printk(KERN_INFO "D Status stack trace dump:\n");
-	show_state_filter(TASK_UNINTERRUPTIBLE);
-#endif
 	return NOTIFY_DONE;
 }
 
@@ -548,7 +542,6 @@ static irqreturn_t wdog_bark_handler(int irq, void *dev_id)
 	nanosec_rem = do_div(wdog_dd->last_pet, 1000000000);
 	dev_info(wdog_dd->dev, "Watchdog last pet at %lu.%06lu\n",
 			(unsigned long) wdog_dd->last_pet, nanosec_rem / 1000);
-	show_state_filter(TASK_UNINTERRUPTIBLE);
 
 	if (wdog_dd->do_ipi_ping)
 		dump_cpu_alive_mask(wdog_dd);
